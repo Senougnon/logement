@@ -466,6 +466,10 @@ function showPaymentModal(house, additionalDetails = '') {
     if (house.avance && house.avance > 0) {
         totalPrice = house.loyer * house.avance;
     }
+    
+    if (house.loyer && house.avance && house["nombre de loyer"]) {
+        totalPrice = house.loyer * (house.avance + house["nombre de loyer"]);
+    }
 
     if (house.frais_supplementaire) {
         totalPrice += parseInt(house.frais_supplementaire); // Assuming frais_supplementaire is a string representing a number
@@ -475,6 +479,8 @@ function showPaymentModal(house, additionalDetails = '') {
         <p><strong>Maison:</strong> ${house.ville}, ${house.commune}, ${house.quartier}</p>
         <p><strong>Loyer:</strong> ${house.loyer} FCFA</p>
         ${house.avance > 0 ? `<p><strong>Avance:</strong> ${house.avance} mois</p>` : ''}
+        ${house["nombre de loyer"] > 0 ? `<p><strong>Nombre de loyer:</strong> ${house["nombre de loyer"]} mois</p>` : ''}
+        ${house.caution > 0 ? `<p><strong>Caution:</strong> ${house.caution} FCFA</p>` : ''}
         ${house.frais_supplementaire ? `<p><strong>Frais Supplémentaires:</strong> ${house.frais_supplementaire} FCFA</p>` : ''}
         <p><strong>Montant Total à Payer:</strong> ${totalPrice} FCFA</p>
         ${additionalDetails}
@@ -512,6 +518,10 @@ payButton.addEventListener("click", async () => {
   let amount = selectedHouse.loyer;
   if (selectedHouse.avance && selectedHouse.avance > 0) {
       amount = selectedHouse.loyer * selectedHouse.avance;
+  }
+    
+  if (selectedHouse.loyer && selectedHouse.avance && selectedHouse["nombre de loyer"]) {
+      amount = selectedHouse.loyer * (selectedHouse.avance + selectedHouse["nombre de loyer"]);
   }
   if (selectedHouse.frais_supplementaire) {
       amount += parseInt(selectedHouse.frais_supplementaire);
@@ -576,16 +586,20 @@ async function addSubscription(maisonId, locataireId, agenceUserId) {
     const newSouscriptionRef = push(souscriptionsRef);
     const maisonRef = ref(database, `maisons/${maisonId}`);
     const maisonSnapshot = await get(maisonRef);
-    const loyer = maisonSnapshot.val().loyer;
+    const maison = maisonSnapshot.val();
+    const loyer = maison.loyer;
+    const caution = maison.caution || 0;
+    const autres = maison.frais_supplementaire || "";
+    const avance = maison.loyer * (maison.avance + maison["nombre de loyer"]);
 
     await set(newSouscriptionRef, {
         id: newSouscriptionRef.key,
         userId: agenceUserId, // Lier la souscription à l'ID de l'agence
         maison: maisonId,
         locataire: locataireId,
-        caution: 0, 
-        avance: 0, 
-        autres: "", 
+        caution: caution, 
+        avance: avance, 
+        autres: autres, 
         dateDebut: new Date().toISOString().split('T')[0], 
         loyer: loyer
     });
@@ -685,6 +699,10 @@ function showDetailsModal(house) {
         <p><strong>Localisation:</strong> ${house.ville}, ${house.commune}, ${house.quartier}</p>
         <p><strong>Loyer:</strong> ${house.loyer} FCFA</p>
         <p><strong>Nombre de pièces:</strong> ${house.pieces}</p>
+        <p><strong>Nombre de loyer:</strong> ${house["nombre de loyer"]}</p>
+        <p><strong>Caution:</strong> ${house.caution} FCFA</p>
+        <p><strong>Avance:</strong> ${house.avance} mois</p>
+        <p><strong>Frais supplementaires:</strong> ${house.frais_supplementaire} FCFA</p>
         <!-- Add other details here -->
     `;
 
@@ -738,6 +756,10 @@ function showProductDetailsPage(house) {
         <p><strong>Loyer:</strong> ${house.loyer} FCFA</p>
         <p><strong>Nombre de pièces:</strong> ${house.pieces}</p>
         <p><strong>Propriétaire:</strong> ${house.proprietaire}</p>
+        <p><strong>Nombre de loyer:</strong> ${house["nombre de loyer"]}</p>
+        <p><strong>Caution:</strong> ${house.caution} FCFA</p>
+        <p><strong>Avance:</strong> ${house.avance} mois</p>
+        <p><strong>Frais supplementaires:</strong> ${house.frais_supplementaire} FCFA</p>
         <!-- Add other details here -->
     `;
 
