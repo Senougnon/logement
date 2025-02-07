@@ -316,7 +316,7 @@ async function displayHouses(houses) {
 
             // Construit le contenu HTML de la carte de la maison
             houseDiv.innerHTML = `
-                <h3>${house.type || 'Type inconnu'} à louer</h3>
+                <h3>${house.type || 'Type inconnu'}</h3>
                 <p class="location"><strong>Localisation:</strong> ${house.ville || 'Ville inconnue'}, ${house.commune || 'Commune inconnue'}, ${house.quartier || 'Quartier inconnu'}</p>
                 <p class="price"><strong>Loyer:</strong> ${house.loyer ? house.loyer + ' FCFA' : 'Loyer inconnu'}</p>
                 <button class="rent-button" data-house-id="${houseId}" ${isPurchased || !isAvailable ? 'disabled' : ''}>
