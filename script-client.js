@@ -320,7 +320,7 @@ async function displayHouses(houses) {
                 <p class="location"><strong>Localisation:</strong> ${house.ville || 'Ville inconnue'}, ${house.commune || 'Commune inconnue'}, ${house.quartier || 'Quartier inconnu'}</p>
                 <p class="price"><strong>Loyer:</strong> ${house.loyer ? house.loyer + ' FCFA' : 'Loyer inconnu'}</p>
                 <button class="rent-button" data-house-id="${houseId}" ${isPurchased || !isAvailable ? 'disabled' : ''}>
-                    ${isPurchased || !isAvailable ? 'INDISPONIBLE' : 'LOUER'}
+                    ${isPurchased || !isAvailable ? 'INDISPONIBLE' : 'OUVRIR'}
                 </button>
             `;
             housesContainer.appendChild(houseDiv);
@@ -392,7 +392,7 @@ async function displayHouses(houses) {
                             showPaymentModal(selectedHouse, additionalDetails);
                         }
                     } else {
-                        alert("Veuillez vous connecter pour louer une maison.");
+                        alert("Veuillez vous connecter pour continuer.");
                         showAuthModal();
                     }
                 } catch (error) {
@@ -503,7 +503,7 @@ payButton.addEventListener("click", async () => {
   }
 
   if (!selectedHouse) {
-    alert("Veuillez sélectionner une maison à louer.");
+    alert("Veuillez sélectionner un produit.");
     return;
   }
 
